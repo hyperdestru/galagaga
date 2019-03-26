@@ -23,6 +23,8 @@ function Ship.Load()
 	Ship.y = GAME_HEIGHT - (Ship.height * 2)
 
 	Ship.laser = love.graphics.newImage('images/laser1.png')
+	Ship.laserWidth = Ship.laser:getWidth()
+	Ship.laserHeight = Ship.laser:getWidth()
 end
 
 function Ship.Update(dt)
@@ -52,11 +54,12 @@ function Ship.Draw()
 	love.graphics.draw(Ship.sprite, Ship.x, Ship.y, 0, 2, 2, Ship.width / 2, Ship.height / 2)
 
 	if Ship.shoot == true then
+		love.graphics.draw(Ship.laser, Ship.x, Ship.y - Ship.height - Ship.laserWidth, 0, 2, 2, Ship.laserWidth / 2, Ship.laserHeight / 2)
 	end
 end
 
 function Ship.Keypressed(key)
-	if key = 'space' and Ship.shoot == false then
+	if key == 'space' and Ship.shoot == false then
 		Ship.shoot = true
 	else
 		Ship.shoot = false
