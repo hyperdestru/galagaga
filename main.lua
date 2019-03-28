@@ -1,3 +1,17 @@
+function CreateSprite(pName, px, py)
+    sprite = {}
+    sprite.img = love.graphics.newImage('images/' .. pName .. '.png')
+    sprite.x = px
+    sprite.y = py
+    sprite.w = sprite.img:getWidth()
+    sprite.h = sprite.img:getHeight()
+    sprite.kill = false
+
+    table.insert(Sprites, sprite)
+
+    return sprite
+end
+
 function love.load()
     game_width = love.graphics.getWidth()
     game_height = love.graphics.getHeight()
@@ -14,32 +28,12 @@ function love.load()
     ship.fire = false
 
     laser = {}
-    laser.x = 0
-    laser.y = 0
-    laser.vx = 0
     laser.vy = 0
     laser.speed = 10
-    laser.image = love.graphics.newImage('images/laser1.png')
-    laser.width = laser.image:getWidth()
-    laser.height = laser.image:getHeight()
     laser.sound = love.audio.newSource('sounds/shoot.wav', 'static')
 
     Sprites = {}
     Tirs = {}
-end
-
-function CreateSprite(pName, px, py)
-    sprite = {}
-    sprite.img = love.graphics.newImage('images/' .. pName .. '.png')
-    sprite.x = px
-    sprite.y = py
-    sprite.w = sprite.img:getWidth()
-    sprite.h = sprite.img:getHeight()
-    sprite.kill = false
-
-    table.insert(Sprites, sprite)
-
-    return sprite
 end
 
 function love.update(dt)
@@ -64,10 +58,12 @@ function love.update(dt)
     end
     ----
 
+    laser.vy = laser.speed + (60 * dt)
+
     local n
     for n = #Tirs, 1, -1 do
         local tir = Tirs[n]
-        tir.y = tir.y + tir.v
+        tir.y = tir.y - laser.vy
         if tir.y < 0 or tir.y > game_height then
             tir.kill = true
             table.remove(Tirs, n)
@@ -79,7 +75,6 @@ function love.update(dt)
             table.remove(Sprites, n)
         end
     end
-    
 end
 
 function love.draw()
@@ -95,7 +90,6 @@ end
 function love.keypressed(key)
     if key == 'space' then
         local tir = CreateSprite('laser1', ship.x, ship.y - ship.width)
-        tir.v = -laser.speed
         table.insert(Tirs, tir)
         laser.sound:play()
     end
