@@ -1,10 +1,12 @@
-function CreateSprite(pName, px, py)
+function CreateSprite(pName, px, py, pvx, pvy)
     sprite = {}
     sprite.img = love.graphics.newImage('images/' .. pName .. '.png')
     sprite.x = px
     sprite.y = py
-    sprite.w = sprite.img:getWidth()
-    sprite.h = sprite.img:getHeight()
+    sprite.vx = pvx
+    sprite.vy = pvy
+    sprite.width = sprite.img:getWidth()
+    sprite.height = sprite.img:getHeight()
     sprite.kill = false
 
     table.insert(Sprites, sprite)
@@ -16,24 +18,18 @@ function love.load()
     game_width = love.graphics.getWidth()
     game_height = love.graphics.getHeight()
 
-    ship = {}
-    ship.image = love.graphics.newImage('images/ship.png')
-    ship.width = ship.image:getWidth()
-    ship.height = ship.image:getHeight()
-    ship.x = game_width / 2
+    --Sprites will contain every sprites of the game (hero, enemies, lasers etc) : we'll only have one Sprites loop in the draw()
+    Sprites = {}
+    --Will contain every lasers shoot
+    Tirs = {}
+
+    ship = CreateSprite('ship', game_width / 2, game_height / 2, 0, 0)
     ship.y = game_height - ship.height * 2
-    ship.vx = 0
-    ship.vy = 0
     ship.speed = 5
-    ship.fire = false
 
     laser = {}
-    laser.vy = 0
     laser.speed = 10
     laser.sound = love.audio.newSource('sounds/shoot.wav', 'static')
-
-    Sprites = {}
-    Tirs = {}
 end
 
 function love.update(dt)
@@ -78,18 +74,16 @@ function love.update(dt)
 end
 
 function love.draw()
-    love.graphics.draw(ship.image, ship.x, ship.y, 0, 2, 2, ship.width / 2, ship.height / 2)
-
     local n
     for n = 1, #Sprites do
         local s = Sprites[n]
-        love.graphics.draw(s.img, s.x, s.y, 0, 2, 2, s.w / 2, s.h / 2)
+        love.graphics.draw(s.img, s.x, s.y, 0, 2, 2, s.width / 2, s.height / 2)
     end
 end
 
 function love.keypressed(key)
     if key == 'space' then
-        local tir = CreateSprite('laser1', ship.x, ship.y - ship.width)
+        local tir = CreateSprite('laser1', ship.x, ship.y - ship.width, 0, 0)
         table.insert(Tirs, tir)
         laser.sound:play()
     end
