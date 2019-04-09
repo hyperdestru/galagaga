@@ -1,15 +1,6 @@
 io.stdout:setvbuf('no')
 love.graphics.setDefaultFilter("nearest")
 
-sprites = {}
-
-ship = {}
-
-lasers = {}
-lasers.sound = nil
-
-aliens = {}
-
 function CreateSprite(pName, px, py, pvx, pvy)
     sprite = {}
     sprite.img = love.graphics.newImage('images/' .. pName .. '.png')
@@ -36,7 +27,7 @@ function CreateAlien(pType, px, py, pvx, pvy)
         alien.vy = 2
 
     elseif pType == '2' then
-
+        --Rolling a dice to choose if enemy2 goes right or left
         local direction = love.math.random(1, 2)
 
         if direction == 1 then
@@ -66,9 +57,49 @@ function love.load()
     game_width = love.graphics.getWidth()
     game_height = love.graphics.getHeight()
 
+    sprites = {}
+
+    ship = {}
     ship = CreateSprite('ship', game_width / 2, game_height / 2, 5, 5)
 
+    lasers = {}
+    lasers.sound = nil
     lasers.sound = love.audio.newSource('sounds/shoot.wav', 'static')
+
+    aliens = {}
+
+    map = {}
+    map.grid = {}
+    map.tiles = {}
+
+    map.grid = { 
+                    { 1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0 },
+                    { 1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0 },
+                    { 1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0 },
+                    { 1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0 },
+                    { 2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0 },
+                    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+                    { 0,0,0,0,0,0,0,2,1,1,2,0,0,0,0,0,0 },
+                    { 0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0 },
+                    { 0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0 },
+                    { 0,0,0,0,0,0,0,2,1,1,2,0,0,0,0,0,0 },
+                    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+                    { 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3 }
+    }
+
+    map.width = 16
+    map.height = 12
+    map.tile_width = 32*2
+    map.tile_height = 32*2
+
+    ----LOADING MAP TILES FROM FOLDER
+    do
+        local i
+        for i = 1, 3 do
+            map.tiles[i] = love.graphics.newImage('images/tuile_'..tostring(i)..'.png')
+        end
+    end
+    ----
 
     StartGame()
 
@@ -139,10 +170,38 @@ end
 
 function love.draw()
 
-    local n
-    for n = 1, #sprites do
-        local s = sprites[n]
-        love.graphics.draw(s.img, s.x, s.y, 0, 2, 2, s.width / 2, s.height / 2)
+    ----DRAW MAP
+    do
+        local l,c
+        local x, y = 0, 0
+
+        --map.height or #map.grid
+        for l = 1, map.height do
+
+            for c = 1, map.width do
+
+                --l_tile for local tile
+                local l_tile = map.grid[l][c]
+
+                if map.grid[l][c] > 0 then
+                    love.graphics.draw(map.tiles[l_tile], x, y, 0, 2, 2)
+                end
+
+                x = x + map.tile_width
+            end
+
+            x = 0
+            y = y + map.tile_height
+        end 
+    end
+    ----
+
+    do
+        local n
+        for n = 1, #sprites do
+            local s = sprites[n]
+            love.graphics.draw(s.img, s.x, s.y, 0, 2, 2, s.width / 2, s.height / 2)
+        end
     end
 
 end
