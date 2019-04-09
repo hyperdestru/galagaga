@@ -49,6 +49,9 @@ function StartGame()
     ship.y = game_height - ship.height * 2
     CreateAlien('1', game_width / 2 - 200, game_height / 2 - 100, 0, 0)
     CreateAlien('2', game_width / 2, game_height / 2 - 100, 0, 0)
+
+    --Reset camera
+    camera.y = 0
 end
 
 
@@ -73,12 +76,12 @@ function love.load()
     map.tiles = {}
 
     map.grid = { 
+                    { 1,1,1,1,1,0,0,0,0,0,0,1,1,1,0,0,0 },
+                    { 1,1,1,1,1,0,0,0,0,0,0,1,1,1,0,0,0 },
+                    { 1,1,1,1,1,0,0,0,0,0,0,2,2,2,0,0,0 },
                     { 1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0 },
-                    { 1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0 },
-                    { 1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0 },
-                    { 1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0 },
-                    { 2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0 },
-                    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+                    { 2,2,2,2,2,0,0,0,0,0,0,0,0,0,1,1,1 },
+                    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1 },
                     { 0,0,0,0,0,0,0,2,1,1,2,0,0,0,0,0,0 },
                     { 0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0 },
                     { 0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0 },
@@ -99,6 +102,11 @@ function love.load()
             map.tiles[i] = love.graphics.newImage('images/tuile_'..tostring(i)..'.png')
         end
     end
+    ----
+
+    ----CAMERA
+    camera = {}
+    camera.y = 0
     ----
 
     StartGame()
@@ -166,6 +174,14 @@ function love.update(dt)
     end
     ----
 
+    ----MOVING CAMERA
+    camera.y = camera.y + 2
+
+    if camera.y >= game_height*2 then
+        camera.y = 0
+    end
+    ----
+
 end
 
 function love.draw()
@@ -173,10 +189,11 @@ function love.draw()
     ----DRAW MAP
     do
         local l,c
-        local x, y = 0, 0
+        local x = 0
+        local y = 0 - map.tile_height + camera.y
 
         --map.height or #map.grid
-        for l = 1, map.height do
+        for l = map.height, 1, -1 do
 
             for c = 1, map.width do
 
@@ -191,7 +208,7 @@ function love.draw()
             end
 
             x = 0
-            y = y + map.tile_height
+            y = y - map.tile_height
         end 
     end
     ----
