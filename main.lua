@@ -1,234 +1,379 @@
 io.stdout:setvbuf('no')
 love.graphics.setDefaultFilter("nearest")
 
-function CreateSprite(pName, px, py, pvx, pvy)
-    sprite = {}
-    sprite.img = love.graphics.newImage('images/' .. pName .. '.png')
-    sprite.x = px
-    sprite.y = py
-    sprite.vx = pvx
-    sprite.vy = pvy
-    sprite.width = sprite.img:getWidth()
-    sprite.height = sprite.img:getHeight()
-    sprite.kill = false
+hero = {}
 
-    table.insert(sprites, sprite)
+math.randomseed(love.timer.getTime())
+
+-- Listes d'éléments
+liste_sprites = {}
+liste_tirs = {}
+liste_aliens = {}
+
+-- Niveau 16x12
+niveau = {}
+table.insert(niveau, { 0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0 })
+table.insert(niveau, { 0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0 })
+table.insert(niveau, { 0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0 })
+table.insert(niveau, { 0,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,2,2,2,2,2,2,2,2,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 })
+table.insert(niveau, { 0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0 })
+table.insert(niveau, { 0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0 })
+table.insert(niveau, { 0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0 })
+table.insert(niveau, { 0,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,2,2,2,2,2,2,2,2,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 })
+table.insert(niveau, { 0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0 })
+table.insert(niveau, { 0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0 })
+table.insert(niveau, { 0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0 })
+table.insert(niveau, { 0,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,2,2,2,2,2,2,2,2,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 })
+table.insert(niveau, { 0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0 })
+table.insert(niveau, { 0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0 })
+table.insert(niveau, { 0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0 })
+table.insert(niveau, { 0,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,2,2,2,2,2,2,2,2,0,0 })
+table.insert(niveau, { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 })
+table.insert(niveau, { 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3 })
+
+-- Camera
+camera = {}
+camera.y = 0
+camera.vitesse = 1
+
+----Chargement images des tuiles
+imgTuiles = {}
+local n
+for n = 1, 3 do
+	imgTuiles[n] = love.graphics.newImage("images/tuile_"..n..".png")
+end
+----
+
+sound_shoot = love.audio.newSource("sounds/shoot.wav","static")
+sound_explode = love.audio.newSource('sounds/explosion.wav', 'static')
+
+--####################################################################################################
+
+function math.angle(x1,y1, x2,y2) return math.atan2(y2-y1, x2-x1) end
+
+function CreateAlien(pType, pX, pY)
+	local nomImage = ""
+
+	if pType == 1 then
+	    nomImage = "enemy1"
+	elseif pType == 2 then
+	    nomImage = "enemy2"
+	elseif pType == 3 then
+	    nomImage = "tourelle"
+	end
+
+	local alien = CreateSprite(nomImage, pX, pY)
+	alien.type = pType
+	alien.sleep = true
+	alien.chronoTir = 0
+
+	if pType == 1 then
+		alien.vy = 2
+		alien.vx = 0
+		alien.energy = 1
+	elseif pType == 2 then
+		alien.vy = 2
+		alien.energy = 2
+		local direction = math.random(1,2)
+
+		if direction == 1 then
+		  alien.vx = 1
+		else
+		  alien.vx = -1
+		end
+
+	elseif pType == 3 then
+		alien.energy = 3
+		alien.vx = 0
+		alien.vy = camera.vitesse
+	end
+
+	table.insert(liste_aliens, alien)
+end
+
+function CreateSprite(pNomImage, pX, pY)  
+    sprite = {}
+    sprite.x = pX
+    sprite.y = pY
+    sprite.supprime = false
+    sprite.image = love.graphics.newImage("images/"..pNomImage..".png")
+    sprite.l = sprite.image:getWidth()
+    sprite.h = sprite.image:getHeight()
+
+    table.insert(liste_sprites, sprite)
 
     return sprite
 end
 
-function CreateAlien(pType, px, py, pvx, pvy)
-    local name = 'enemy' .. pType
-    local alien = CreateSprite(name, px, py, pvx, pvy)
-
-    if pType == '1' then
-
-        alien.vx = 0
-        alien.vy = 2
-
-    elseif pType == '2' then
-        --Rolling a dice to choose if enemy2 goes right or left
-        local direction = love.math.random(1, 2)
-
-        if direction == 1 then
-            alien.vx = 1
-        elseif direction == 2 then
-            alien.vx = -1
-        end
-
-        alien.vy = 2
-    end
-
-    table.insert(aliens, alien)
-
-    return alien
+function CreateLaser(pType, pName, px, py, pvx, pvy)
+    local tir = CreateSprite(pName, px, py)
+    tir.vx = pvx
+    tir.vy = pvy
+    tir.type = pType
+    table.insert(liste_tirs, tir)  
+    sound_shoot:play()
 end
 
-function StartGame()
-    ship.x = game_width / 2
-    ship.y = game_height - ship.height * 2
-    CreateAlien('1', game_width / 2 - 200, game_height / 2 - 100, 0, 0)
-    CreateAlien('2', game_width / 2, game_height / 2 - 100, 0, 0)
+function collide(a1, a2)
+	if (a1 == a2) then 
+		return false 
+	end
 
-    --Reset camera
+	local dx = a1.x - a2.x
+	local dy = a1.y - a2.y
+	if (math.abs(dx) < a1.image:getWidth() + a2.image:getWidth()) then
+		if (math.abs(dy) < a1.image:getHeight() + a2.image:getHeight()) then
+			return true
+		end
+	end
+
+	return false
+end
+
+function NewGame()
+    hero.x = largeur / 2
+    hero.y = hauteur - (hero.h*2)
+    hero.life = 3
+    hero.gameover = false
+
+    -- Création des aliens
+    local ligne = 4
+    CreateAlien(1, largeur / 2, -(64 / 2)-(64 * (ligne - 1)))
+    ligne = 10
+    CreateAlien(2, largeur / 2, -(64 / 2)-(64 * (ligne - 1)))
+    ligne = 11
+    CreateAlien(3, 3 * 64, -(64 / 2)-(64 * (ligne - 1)))
+
+    -- RAZ de la Caméra
     camera.y = 0
 end
 
+--####################################################################################################
 
 function love.load()
 
-    game_width = love.graphics.getWidth()
-    game_height = love.graphics.getHeight()
+    largeur = love.graphics.getWidth()
+    hauteur = love.graphics.getHeight()
 
-    sprites = {}
+    hero = CreateSprite("ship", largeur/2, hauteur/2)
+    hero.speed = 9
 
-    ship = {}
-    ship = CreateSprite('ship', game_width / 2, game_height / 2, 5, 5)
-
-    lasers = {}
-    lasers.sound = nil
-    lasers.sound = love.audio.newSource('sounds/shoot.wav', 'static')
-
-    aliens = {}
-
-    map = {}
-    map.grid = {}
-    map.tiles = {}
-
-    map.grid = { 
-                    { 1,1,1,1,1,0,0,0,0,0,0,1,1,1,0,0,0 },
-                    { 1,1,1,1,1,0,0,0,0,0,0,1,1,1,0,0,0 },
-                    { 1,1,1,1,1,0,0,0,0,0,0,2,2,2,0,0,0 },
-                    { 1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0 },
-                    { 2,2,2,2,2,0,0,0,0,0,0,0,0,0,1,1,1 },
-                    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1 },
-                    { 0,0,0,0,0,0,0,2,1,1,2,0,0,0,0,0,0 },
-                    { 0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0 },
-                    { 0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0 },
-                    { 0,0,0,0,0,0,0,2,1,1,2,0,0,0,0,0,0 },
-                    { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-                    { 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3 }
-    }
-
-    map.width = 16
-    map.height = 12
-    map.tile_width = 32*2
-    map.tile_height = 32*2
-
-    ----LOADING MAP TILES FROM FOLDER
-    do
-        local i
-        for i = 1, 3 do
-            map.tiles[i] = love.graphics.newImage('images/tuile_'..tostring(i)..'.png')
-        end
-    end
-    ----
-
-    ----CAMERA
-    camera = {}
-    camera.y = 0
-    ----
-
-    StartGame()
+    NewGame()
 
 end
 
 function love.update(dt)
 
-    ----HERO SHIP
-    do
-        if love.keyboard.isDown('right') then
-            ship.x = ship.x + ship.vx
-        end
+	if hero.gameover == false then
+	    --Avance la camera
+	    camera.y = camera.y + camera.vitesse
 
-        if love.keyboard.isDown('down') then
-            ship.y = ship.y + ship.vy
-        end
+	    ----Traitement du hero
+	    if hero.life <= 0 then
+	    	hero.gameover = true
+	    	print("YOU. ARE. DEAD.")
+	    	--table.remove(liste_sprites, hero)
+	    end
+	    ----
 
-        if love.keyboard.isDown('left') then
-            ship.x = ship.x - ship.vx
-        end
+		----Traitement des tirs
+	    local n
+	    for n = #liste_tirs, 1, -1 do
 
-        if love.keyboard.isDown('up') then
-            ship.y = ship.y - ship.vy
-        end
-    end
-    ----
+	        local tir = liste_tirs[n]
+	        tir.y = tir.y + tir.vy
+	        tir.x = tir.x + tir.vx
 
-    ----LASERS
-    do
-        local n
-        for n = #lasers, 1, -1 do
-            local laser = lasers[n]
-            laser.y = laser.y + laser.vy
+	        if tir.type == 'alien' then
+	        	if collide(hero, tir) == true then
+	        		print("Boom I'm hit!")
+	        		tir.supprime = true
+	        		table.remove(liste_tirs, n)
+	        		hero.life = hero.life - 1
+	        	end
+	        end
 
-            if laser.y < 0 or laser.y > game_height then
-                laser.kill = true
-                table.remove(lasers, n)
-            end
-        end
-    end
-    ----
+	        if tir.type == 'hero' then
+	        	local n_alien
+	        	for n_alien = #liste_aliens, 1, -1 do
 
-    ----ALIENS
-    do
-        local n
-        for n = #aliens, 1, -1 do
-            local alien = aliens[n]
-            alien.x = alien.x + alien.vx
-            alien.y = alien.y + alien.vy
+	        		local alien = liste_aliens[n_alien]
 
-            if alien.y > game_height then
-                alien.kill = true
-                table.remove(aliens, n)
-            end
-        end
-    end
-    ----
+	        		if collide(tir, alien) then
 
-    ----PURGING KILLED SPRITES
-    for n = #sprites, 1, -1 do
-        if sprites[n].kill == true then
-            table.remove(sprites, n)
-        end
-    end
-    ----
+	        			alien.energy = alien.energy - 1
+	        			tir.supprime = true
+	        			table.remove(liste_tirs, n)
 
-    ----MOVING CAMERA
-    camera.y = camera.y + 2
+	        			if alien.energy <= 0 then
 
-    if camera.y >= game_height*2 then
-        camera.y = 0
-    end
-    ----
+	        				alien.supprime = true
+	        				sound_explode:play()
+	        				table.remove(liste_aliens, n_alien)
+	        			
+	        			end
+	        		end
+	        	end
+	        end	       	
 
+	        -- Vérifier si le tir n'est pas sorti de l'écran
+	        if tir.y < 0 or tir.y > hauteur then
+	            -- Marque le sprite pour le supprimer plus tard
+	            tir.supprime = true
+	            table.remove(liste_tirs, n)
+	      
+	        end
+	    end
+	    ----
+
+	    ----Traitement des aliens
+	    for n = #liste_aliens, 1, -1 do
+	        local alien = liste_aliens[n]
+
+	        if alien.y > 0 then
+	            alien.sleep = false
+	        end
+
+		    if alien.sleep == false then
+
+		        alien.x = alien.x + alien.vx
+		        alien.y = alien.y + alien.vy
+
+		        if alien.type == 1 or alien.type == 2 then
+
+		            alien.chronoTir = alien.chronoTir - 1
+
+		            if alien.chronoTir <= 0 then
+		                alien.chronoTir = math.random(60, 100)
+		                CreateLaser('alien','laser2', alien.x, alien.y, 0, 10)
+		            end
+
+		        elseif alien.type == 3 then
+
+		            alien.chronoTir = alien.chronoTir - 1
+
+		            if alien.chronoTir <= 0 then
+		              	alien.chronoTir = math.random(20, 30)
+		              	local vx, vy
+		              	local angle
+		              	angle = math.angle(alien.x, alien.y, hero.x, hero.y)
+		              	vx = 10 * math.cos(angle)
+		              	vy = 10 * math.sin(angle)
+		            	CreateLaser('alien','laser2', alien.x, alien.y, vx, vy)
+		            end
+		        end
+
+		    else
+		      alien.y = alien.y + camera.vitesse
+		    end
+
+		    if alien.y > hauteur then
+		      alien.supprime = true
+		      table.remove(liste_aliens, n)
+		    end
+		end
+	    ----
+
+	    ----Purge des sprites à supprimer
+	    for n = #liste_sprites, 1, -1 do
+		    if liste_sprites[n].supprime == true then
+		     	table.remove(liste_sprites,n)
+		    end
+	    end
+	    ----
+
+	    ----Traitement du vaisseau
+	    if love.keyboard.isDown("right") and hero.x < largeur then
+	    	hero.x = hero.x + hero.speed
+	    end
+
+	    if love.keyboard.isDown("left") and hero.x > 0 then
+	    	hero.x = hero.x - hero.speed
+	    end
+
+	    if love.keyboard.isDown("up") and hero.y > 0 then
+	    	hero.y = hero.y - hero.speed
+	    end
+
+	    if love.keyboard.isDown("down") and hero.y < hauteur then
+	    	hero.y = hero.y + hero.speed
+	    end
+	    ----
+	end
 end
 
 function love.draw()
+  
+	----Dessin du niveau
+	local nbLignes = #niveau
+	local ligne,colonne
+	local x,y
 
-    ----DRAW MAP
-    do
-        local l,c
-        local x = 0
-        local y = 0 - map.tile_height + camera.y
+	x = 0
+	y = (0 - 64) + camera.y
 
-        --map.height or #map.grid
-        for l = map.height, 1, -1 do
+	for ligne = nbLignes, 1, -1 do
 
-            for c = 1, map.width do
+	for colonne = 1, 16 do
+		-- Dessine la tuile
+		local tuile = niveau[ligne][colonne]
 
-                --l_tile for local tile
-                local l_tile = map.grid[l][c]
+		if tuile > 0 then
+			love.graphics.draw(imgTuiles[tuile],x,y,0,2,2)
+		end
 
-                if map.grid[l][c] > 0 then
-                    love.graphics.draw(map.tiles[l_tile], x, y, 0, 2, 2)
-                end
+		x = x + 64
 
-                x = x + map.tile_width
-            end
-
-            x = 0
-            y = y - map.tile_height
-        end 
-    end
-    ----
-
-    do
-        local n
-        for n = 1, #sprites do
-            local s = sprites[n]
-            love.graphics.draw(s.img, s.x, s.y, 0, 2, 2, s.width / 2, s.height / 2)
-        end
-    end
-
+	end
+		x = 0
+		y = y - 64
+	end
+	----
+  
+	----Dessin de tous les sprites
+	local n
+	for n = 1, #liste_sprites do
+		local s = liste_sprites[n]
+		love.graphics.draw(s.image, s.x, s.y, 0, 2, 2, s.l/2, s.h/2)
+	end
+	----
+  
+	love.graphics.print("Nombre de tirs = "..#liste_tirs.." Nombre de sprites = "..#liste_sprites.." Nombre d'aliens = "..#liste_aliens,10,10)
 end
 
 function love.keypressed(key)
-
-    if key == 'space' then
-        local laser = CreateSprite('laser1', ship.x, ship.y - ship.width, 0, -10)
-        table.insert(lasers, laser)
-        lasers.sound:play()
-    end
-
+  
+	if key == "space" then
+		CreateLaser('hero', 'laser1', hero.x, hero.y - (hero.h * 2) / 2, 0, -10)
+	end
+  
 end
+  
+
