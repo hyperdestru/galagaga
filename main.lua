@@ -16,27 +16,27 @@ niveau = {
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 2,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 2,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 2,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 2,3,2,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,3,3,3,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,3,3,3,3,3,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,3,3,3,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,3,3,3,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,3,3,3,3,3,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,3,3,3,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
@@ -61,7 +61,7 @@ niveau = {
 -- Camera
 camera = {}
 camera.y = 0
-camera.vitesse = 1
+camera.vitesse = 4
 
 ----Gestion des ecrans
 screens = {}
@@ -114,6 +114,8 @@ function CreateAlien(pType, pX, pY)
 	    nomImage = "enemy2"
 	elseif pType == 3 then
 	    nomImage = "tourelle"
+	elseif pType == 10 then
+		nomImage = 'enemy3'
 	end
 
 	local alien = CreateSprite(nomImage, pX, pY)
@@ -125,6 +127,7 @@ function CreateAlien(pType, pX, pY)
 		alien.vy = 2
 		alien.vx = 0
 		alien.energy = 1
+
 	elseif pType == 2 then
 		alien.vy = 2
 		alien.energy = 2
@@ -140,6 +143,12 @@ function CreateAlien(pType, pX, pY)
 		alien.energy = 3
 		alien.vx = 0
 		alien.vy = camera.vitesse
+
+	elseif pType == 10 then
+		alien.vx = 0
+		alien.vy = camera.vitesse * 2
+		alien.energy = 20
+		alien.angle = 0
 	end
 
 	table.insert(liste_aliens, alien)
@@ -198,8 +207,10 @@ function NewGame()
     hero.x = largeur / 2
     hero.y = hauteur - (hero.h*2)
     hero.speed = 9
-    hero.life = 10
+    hero.life = 100
     hero.gameover = false
+    hero.win = false
+    hero.timer_win = 0
 
     ----Création des aliens
     local ligne = 4
@@ -217,6 +228,8 @@ function NewGame()
     CreateAlien(1, 11*64, -(64/2)-(64*(ligne-1)))
     CreateAlien(2, 2*64, -(64/2)-(64*(ligne-1)))
     CreateAlien(2, 14*64, -(64/2)-(64*(ligne-1)))
+    ligne = 42
+    CreateAlien(10, largeur/2, -(64/2)-(64*(ligne-1)))
     ----
 
     --RAZ de la Caméra
@@ -277,6 +290,13 @@ function UpdateGame()
 		    					CreateExplosion(alien.x + math.random(-10,10), alien.y + math.random(-10,10))
 		    				end
 
+		    				if alien.type == 10 then
+		    					for nExpl = 1, 20 do
+		    						CreateExplosion(alien.x + math.random(-30,30), alien.y + math.random(-30,30))
+		    					end
+		    					hero.win = true
+		    				end
+
 		    				sound_explode:play()
 		    				alien.supprime = true
 		    				table.remove(liste_aliens, n_alien)
@@ -322,6 +342,23 @@ function UpdateGame()
 	        elseif alien.type == 3 then
 
 	            alien.chronoTir = alien.chronoTir - 1
+
+	            if alien.chronoTir <= 0 then
+	              	alien.chronoTir = math.random(20, 30)
+	              	local vx, vy
+	              	local angle
+	              	angle = math.angle(alien.x, alien.y, hero.x, hero.y)
+	              	vx = 10 * math.cos(angle)
+	              	vy = 10 * math.sin(angle)
+	            	CreateLaser('alien','laser2', alien.x, alien.y, vx, vy)
+	            end
+	        elseif alien.type == 10 then
+
+	        	if alien.y > hauteur / 3 then
+	        		alien.y = hauteur / 3
+	        	end
+
+	        	alien.chronoTir = alien.chronoTir - 1
 
 	            if alien.chronoTir <= 0 then
 	              	alien.chronoTir = math.random(20, 30)
@@ -381,7 +418,14 @@ function UpdateGame()
 	if love.keyboard.isDown("down") and hero.y < hauteur then
 		hero.y = hero.y + hero.speed
 	end
-	----	
+	----
+
+	if hero.win == true then
+		hero.timer_win = hero.timer_win + 0.1
+		if hero.timer_win >= 10 then
+			screens.current = screens.victory
+		end
+	end
 end
 
 function DrawGame()
@@ -455,6 +499,10 @@ function love.draw()
 
 	if screens.current == screens.gameover then
 		love.graphics.draw(screens.gameoverImg)
+	end
+
+	if screens.current == screens.victory then
+		love.graphics.draw(screens.victoryImg)
 	end
   
 end
