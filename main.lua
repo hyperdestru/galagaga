@@ -65,9 +65,9 @@ camera.vitesse = 1
 
 ----Gestion des ecrans
 screens = {}
-screens.menuImg = love.graphics.newImage('images/galagaga-menu.png')
-screens.gameoverImg = love.graphics.newImage('images/galagaga-gameover.png')
-screens.victoryImg = love.graphics.newImage('images/victory.jpg')
+screens.menuImg = love.graphics.newImage('images/menu.png')
+screens.gameoverImg = love.graphics.newImage('images/gameover.png')
+screens.victoryImg = love.graphics.newImage('images/win.png')
 screens.menu = 'menu'
 screens.gameover = 'gameover'
 screens.victory = 'victory'
@@ -77,15 +77,29 @@ screens.current = screens.menu
 
 ----Chargement images des tuiles
 imgTuiles = {}
-local n
-for n = 1, 3 do
-	imgTuiles[n] = love.graphics.newImage("images/tuile_"..n..".png")
+do
+	local n
+	for n = 1, 3 do
+		imgTuiles[n] = love.graphics.newImage("images/tuile_"..n..".png")
+	end
 end
+----
+
+----Chargement images des explosions
+imgExplosions = {}
+do
+	local n
+	for n = 1, 5 do
+		imgExplosions[n] = love.graphics.newImage('images/explode_' .. n .. '.png')
+	end
+end
+
 ----
 
 sound_shoot = love.audio.newSource('sounds/shoot.wav', 'static')
 sound_explode = love.audio.newSource('sounds/explosion.wav', 'static')
 sound_gameover = love.audio.newSource('sounds/game-over.wav', 'static')
+sound_hurt = love.audio.newSource('sounds/hurt.wav', 'static')
 
 --#####################################HOMEMADE FUNCTIONS###############################################################
 
@@ -140,9 +154,19 @@ function CreateSprite(pNomImage, pX, pY)
     sprite.l = sprite.image:getWidth()
     sprite.h = sprite.image:getHeight()
 
+    sprite.frame = 1
+    sprite.liste_frames = {}
+    sprite.maxFrame = 1
+
     table.insert(liste_sprites, sprite)
 
     return sprite
+end
+
+function CreateExplosion(px, py)
+	local newExplosion = CreateSprite('explode_1', px, py)
+	newExplosion.liste_frames = imgExplosions
+	newExplosion.maxFrame = 5
 end
 
 function CreateLaser(pType, pName, px, py, pvx, pvy)
@@ -222,10 +246,12 @@ function UpdateGame()
 
 	    if tir.type == 'alien' then
 	    	if collide(hero, tir) == true then
-	    		print("Boom I'm hit!")
+
 	    		hero.life = hero.life - 1
+	    		sound_hurt:play()
 	    		tir.supprime = true
 	    		table.remove(liste_tirs, n)
+
 	    	end
 	    end
 
@@ -235,20 +261,29 @@ function UpdateGame()
 
 	    		local alien = liste_aliens[n_alien]
 
-	    		if collide(tir, alien) then
+	    		if alien.sleep == false then
 
-	    			alien.energy = alien.energy - 1
-	    			tir.supprime = true
-	    			table.remove(liste_tirs, n)
+		    		if collide(tir, alien) then
 
-	    			if alien.energy <= 0 then
+		    			alien.energy = alien.energy - 1
+		    			CreateExplosion(tir.x, tir.y)
+		    			tir.supprime = true
+		    			table.remove(liste_tirs, n)
 
-	    				alien.supprime = true
-	    				sound_explode:play()
-	    				table.remove(liste_aliens, n_alien)
-	    			
-	    			end
-	    		end
+		    			if alien.energy <= 0 then
+
+		    				local nExpl
+		    				for nExpl = 1, 5 do
+		    					CreateExplosion(alien.x + math.random(-10,10), alien.y + math.random(-10,10))
+		    				end
+
+		    				sound_explode:play()
+		    				alien.supprime = true
+		    				table.remove(liste_aliens, n_alien)
+		    			
+		    			end
+		    		end
+		    	end
 	    	end
 	    end	       	
 
@@ -310,9 +345,21 @@ function UpdateGame()
 	end
 	----
 
-	----Purge des sprites à supprimer
+	----TRAITEMENT ET PURGE DES SPRITES
 	for n = #liste_sprites, 1, -1 do
-	    if liste_sprites[n].supprime == true then
+		local sprite = liste_sprites[n]
+
+		--Le sprite est il animé ? 
+		if sprite.maxFrame > 1 then
+			sprite.frame = sprite.frame + 0.2
+			if math.floor(sprite.frame) > sprite.maxFrame then
+				sprite.supprime = true
+			else
+				sprite.image = sprite.liste_frames[math.floor(sprite.frame)]
+			end
+		end
+
+	    if sprite.supprime == true then
 	     	table.remove(liste_sprites,n)
 	    end
 	end
