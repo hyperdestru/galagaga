@@ -1,5 +1,5 @@
 # Game Dev Journey
 
-### Week #4
+### Part#1 - Lua and Love2D
 
-Galactic top-down shooter with LÖVE
+Top down shooter prototype

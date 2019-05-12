@@ -207,7 +207,7 @@ function NewGame()
     hero.x = largeur / 2
     hero.y = hauteur - (hero.h*2)
     hero.speed = 9
-    hero.life = 100
+    hero.life = 10
     hero.gameover = false
     hero.win = false
     hero.timer_win = 0
