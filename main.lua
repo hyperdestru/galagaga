@@ -208,6 +208,7 @@ function NewGame()
     hero.y = hauteur - (hero.h*2)
     hero.speed = 9
     hero.life = 10
+    hero.score = 0
     hero.gameover = false
     hero.win = false
     hero.timer_win = 0
@@ -297,6 +298,7 @@ function UpdateGame()
 		    					hero.win = true
 		    				end
 
+		    				hero.score = hero.score + 1
 		    				sound_explode:play()
 		    				alien.supprime = true
 		    				table.remove(liste_aliens, n_alien)
@@ -462,6 +464,7 @@ function DrawGame()
 	----
 
 	love.graphics.print("LIFE : " .. tostring(hero.life), 10, 10, 0, 2, 2)
+	love.graphics.print("SCORE : " .. tostring(hero.score), 10, 64, 0, 2, 2)
   
 	--love.graphics.print("Nombre de tirs = "..#liste_tirs.." Nombre de sprites = "..#liste_sprites.." Nombre d'aliens = "..#liste_aliens,10,10)
 end
