@@ -1,5 +1,6 @@
 # Game Dev Journey
 
-### Part#1 - Lua and Love2D
+### Some shooter in space
 
-Top down shooter prototype
+![Screenshot](screenshot/galag1.png)
+![Screenshot](screenshot/galag2.png)
