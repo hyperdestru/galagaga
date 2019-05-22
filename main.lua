@@ -1,6 +1,9 @@
 io.stdout:setvbuf('no')
 love.graphics.setDefaultFilter("nearest")
 
+largeur = love.graphics.getWidth()
+hauteur = love.graphics.getHeight()
+
 hero = {}
 
 math.randomseed(love.timer.getTime())
@@ -50,12 +53,12 @@ niveau = {
 	{ 0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ 0,0,0,0,0,3,3,3,3,3,3,0,0,0,0,0 },
-	{ 0,0,0,0,3,3,3,3,3,3,3,3,0,0,0,0 },
-	{ 0,0,0,3,3,3,3,3,3,3,3,3,3,0,0,0 },
-	{ 0,0,3,3,3,3,3,3,3,3,3,3,3,3,0,0 },
-	{ 0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0 },
-	{ 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3 }
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
 }
 
 -- Camera
@@ -93,8 +96,19 @@ do
 		imgExplosions[n] = love.graphics.newImage('images/explode_' .. n .. '.png')
 	end
 end
-
 ----
+
+stars = {}
+do
+	local n
+	for n = 1, 400 do
+		local x_rand = love.math.random(0, largeur)
+		local y_rand = love.math.random(0, hauteur)
+		stars[n] = {}
+		stars[n][1] = x_rand
+		stars[n][2] = y_rand
+	end
+end
 
 sound_shoot = love.audio.newSource('sounds/shoot.wav', 'static')
 sound_explode = love.audio.newSource('sounds/explosion.wav', 'static')
@@ -207,7 +221,7 @@ function NewGame()
     hero.x = largeur / 2
     hero.y = hauteur - (hero.h*2)
     hero.speed = 9
-    hero.life = 10
+    hero.life = 1000
     hero.score = 0
     hero.gameover = false
     hero.win = false
@@ -420,17 +434,19 @@ function UpdateGame()
 	if love.keyboard.isDown("down") and hero.y < hauteur then
 		hero.y = hero.y + hero.speed
 	end
-	----
 
 	if hero.win == true then
 		hero.timer_win = hero.timer_win + 0.1
 		if hero.timer_win >= 10 then
 			screens.current = screens.victory
+			hero.timer_win = 10
 		end
 	end
 end
 
 function DrawGame()
+
+	love.graphics.points(stars)
 
 	----DRAWING THE MAP
 	local nbLignes = #niveau
@@ -472,9 +488,6 @@ end
 --####################################################################################################
 
 function love.load()
-
-    largeur = love.graphics.getWidth()
-    hauteur = love.graphics.getHeight()
 
     hero = CreateSprite("ship", largeur/2, hauteur/2)
 
