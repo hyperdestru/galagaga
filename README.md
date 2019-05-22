@@ -2,5 +2,5 @@
 
 ### Some shooter in space
 
-![Screenshot](screenshot/galag1.png)
-![Screenshot](screenshot/galag2.png)
+![Screenshot](screenshots/galag1.png)
+![Screenshot](screenshots/galag2.png)
